@@ -99,3 +99,6 @@ while True:
         plt.pause(0.0001)
 
         cnt += 1
+
+        if np.mod(cnt, 100) == 0:
+            plt.cla()
