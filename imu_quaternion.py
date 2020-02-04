@@ -3,10 +3,8 @@ import pandas as pd
 import serial  
 import math
 import matplotlib.pyplot as plt 
-from sklearn.preprocessing import minmax_scale
 from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d as plt3d
-from scipy.spatial.transform import Rotation as R
 from drawnow import *
 import transforms3d 
 
@@ -59,7 +57,7 @@ plt.show()
 
 
 fig = plt.figure()
-ax = plt.axes(projection='3d')
+ax = plt.axes(projection='3d', aspect = 'auto', autoscale_on = True)
 plt.ion()
 
 shoulder = [0, 0, 2]
@@ -70,7 +68,7 @@ test = [0, 0, 0]
 
 def makeFig():
     #ax.plot([1.5,cnt], [1.5,cnt], [2,cnt])
-    lines = ax.plot([0,test[0]], [0,test[1]], [2,test[2]], '-b', color = 'red')
+    lines = ax.plot([0,test[0]], [0,test[1]], [2,test[2]], '-b', color = 'blue')
     #ax.plot(updated_point[0], updated_point[1], updated_point[2])
     #ax.plot(updated_point, [1.5, 1.5, 2])
 
@@ -92,11 +90,11 @@ while True:
         # --- Multiplication method --> q * v * q'
         #qv = qv_mult(q, updated_point)
         #updated_point = qv_mult(qv, q_conj)
-        #updated_point = minmax_scale(updated_point)
+
         #-----WORKS WELL ???? with always computing on the same point(elbow)-----#
         test = transforms3d.quaternions.rotate_vector(updated_point, q)
 
-        print(updated_point)
+        print(test)
         makeFig() 
         plt.pause(0.0001)
 
