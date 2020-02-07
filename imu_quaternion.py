@@ -60,7 +60,7 @@ while True:
         quaternions = quaternions.append({'qw':float(x[1]), 'qx':float(x[3]), 'qy':float(x[5]), 'qz':float(x[7])}, ignore_index=True)
         q = quaternions.loc[cnt]
         q_conj = [q[0], -q[1], -q[2], -q[3]]
-        #print(q)
+        print(q)
         print(np.sqrt(q[0]**2 + q[1]**2 + q[2]**2 + q[3]**2))   # Magnitude
         #M = transforms3d.quaternions.quat2mat(quaternions.loc[cnt])
         # - Addition method -- not sure how it works
