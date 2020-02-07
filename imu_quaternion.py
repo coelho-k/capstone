@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 import serial  
-import math
 import matplotlib.pyplot as plt 
+from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d as plt3d
 from drawnow import *
@@ -18,42 +18,22 @@ quaternions = pd.DataFrame(columns = column_names)
 
 cnt = 0
 
-def q_mult(q1, q2):
-    w1, x1, y1, z1 = q1
-    w2, x2, y2, z2 = q2
-    w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2
-    x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2
-    y = w1 * y2 + y1 * w2 + z1 * x2 - x1 * z2
-    z = w1 * z2 + z1 * w2 + x1 * y2 - y1 * x2
-    return [w, x, y, z]
 
-def q_conjugate(q):
-    w, x, y, z = q
-    return [w, -x, -y, -z]
-
-def qv_mult(q1, v1):
-    q2 = [0.0, v1[0], v1[1], v1[2]]
-    return q_mult(q_mult(q1, q2), q_conjugate(q1))
-
-
-fig = plt.figure()
-#fig.set_size_inches(10,10)
+"""fig = plt.figure()
 ax = fig.add_axes([0,0,1,1], projection='3d')
 ax.set_xlim3d(0,3)
 ax.set_ylim3d(0,3)
 ax.set_zlim3d(0,3)
-# set up lines and points
-#lines = ax.plot([0,0], [0,0], [0,1], marker = '.')
-#lines = ax.plot([0,0],[0,0],[1,2], marker = '.')
+
+
 test_shoulder = [1.5, 1.5, 2]
 test_point = [1.5, 1.5, 1]
 test_q = [0, 1, 1, 1]
 test_new = transforms3d.quaternions.rotate_vector(test_point, test_q)
 lines = ax.plot([1.5,1.5], [1.5,1.5], [2,1], marker = '.')
 lines = ax.plot([1.5,test_new[0]], [1.5,test_new[1]], [2,test_new[2]], marker = '.')
-# Adds new line to plot line = plt3d.art3d.Line3D([0.5,0.5], [0.5,0.5], [1,0])
-#ax.add_line(line)
-plt.show()
+
+plt.show()"""
 
 
 fig = plt.figure()
@@ -62,14 +42,14 @@ plt.ion()
 
 shoulder = [0, 0, 2]
 updated_point = [0, 0, 1]
-test = [0, 0, 0]
+test = [0, 0, 1]
 # Calculate the rotation matrix based on the updated vector ??
 # Remove the infinte lines
 
 def makeFig():
     #ax.plot([1.5,cnt], [1.5,cnt], [2,cnt])
-    lines = ax.plot([0,test[0]], [0,test[1]], [2,test[2]], '-b', color = 'blue')
-    #ax.plot(updated_point[0], updated_point[1], updated_point[2])
+    #lines = ax.plot([0,test[0]], [0,test[1]], [2,test[2]], marker = '.', color = 'blue')
+    ax.scatter([0,test[0]], [0,test[1]], [0,test[2]], color = 'blue')
     #ax.plot(updated_point, [1.5, 1.5, 2])
 
 while True:
@@ -93,6 +73,9 @@ while True:
 
         #-----WORKS WELL ???? with always computing on the same point(elbow)-----#
         test = transforms3d.quaternions.rotate_vector(updated_point, q)
+        #------------------------------------------------------------------------
+        #test = np.matmul(np.matmul(q, test), q_conj)
+
 
         print(test)
         makeFig() 
@@ -100,5 +83,5 @@ while True:
 
         cnt += 1
 
-        if np.mod(cnt, 100) == 0:
-            plt.cla()
+        #if np.mod(cnt, 100) == 0:
+        #    plt.cla()
