@@ -23,7 +23,20 @@ shoulder = [0, 0, 2]
 updated_point = [0, 0, 0.5]
 test = [0, 0, 0.5]
 
+
+
 while True:
-    data = imus.readline().decode('ascii').replace('\r\n', '').replace('\t\tCALIBRATION', '').replace(':', '').replace('\t\t', '')
-    x = data.split(' ')
-    print(x)
+    data = imus.readline().decode('ascii').replace('\r\n', '')#.replace('\t\tCALIBRATION', '').replace(':', '').replace('\t\t', '')
+    data = data.split(',')
+    print(data)
+    if data[0] == 'Elbow':
+        elbow = elbow.append({'qw':float(data[1]), 'qx':float(data[2]), 'qy':float(data[3]), 'qz':float(data[4])}, ignore_index=True)    
+    #else:
+    #    wrist = wrist.append({'qw':float(data[1]), 'qx':float(data[2]), 'qy':float(data[3]), 'qz':float(data[4])}, ignore_index=True)
+
+    #elbow_q = elbow.loc[cnt]
+    #wrist_q = wrist.loc[cnt]
+
+    #print(elbow)#, wrist_q)
+
+    cnt = cnt+1
