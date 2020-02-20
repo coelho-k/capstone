@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d as plt3d
-from drawnow import *
+import csv
 import transforms3d 
 
 # -------------------------------
@@ -18,6 +18,9 @@ import transforms3d
         #print('Test mag = ', test_mag)
         #test = [test[0] / test_mag, test[1] / test_mag, test[2] / test_mag]
 # -------------------------------
+
+result_file = open("left_right.csv",'w')
+wr = csv.writer(result_file)
 
 imu = serial.Serial('/dev/ttyACM0', 115200)
 column_names = ["qw", "qx", "qy", "qz"]
@@ -73,8 +76,10 @@ while True:
         test = shoulder + test
         print('New Co-ordinates = ', test)
         # -------------------------------------------------------------------------------------------------#
+        
+        wr.writerow(test)
 
-        # makeFig()
+        """# makeFig()
         ax.plot([0, 0], [0, 0], [2, 1], color = 'blue', marker = '.')   # TORSE
         ax.plot([0, 0.2], [0, 0.2], [1, 0], color = 'blue', marker = '.')   # LEG
         ax.plot([0, -0.2], [0, -0.2], [1, 0], color = 'blue', marker = '.') # LEG 
@@ -87,7 +92,7 @@ while True:
         plt.ylabel('y')
         
         plt.pause(0.0001)
-        ax.cla()
+        ax.cla()"""
         cnt += 1
 
         #if np.mod(cnt, 100) == 0:
