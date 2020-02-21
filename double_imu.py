@@ -25,7 +25,7 @@ shoulder = np.array([0, 0, 2])
 updated_elbow = np.array([0, 0, 1.5])
 updated_wrist = np.array([0, 0, 1])
 wrist_seg = np.array([0, 0, 1])
-elbow_seg = np.array([0,0,1.5])
+elbow_seg = np.array([0, 0, 1.5])
 axis_change = np.array([0.7071, 0, 0.7071, 0])
 
 
@@ -58,7 +58,7 @@ while True:
         print('Elbow = ', elbow_q, '\n')
         print('Wrist = ', wrist_q)
 
-        """# ----------------- Implementing elbow rotation about a fixed point (shoulder) ---------------------
+        # ----------------- Implementing elbow rotation about a fixed point (shoulder) ---------------------
         temp = updated_elbow - shoulder
         elbow_seg = transforms3d.quaternions.rotate_vector(temp, elbow_q)
         elbow_seg = shoulder + elbow_seg
@@ -67,7 +67,7 @@ while True:
         temp = elbow_seg - shoulder
         elbow_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
         elbow_seg = shoulder + elbow_seg
-        print('New Co-ordinates = ', elbow_seg)"""
+        print('New Elbow Co-ordinates = ', elbow_seg)
 
         # ----------------- Implementing wrist rotation about a fixed point (shoulder) ---------------------
         temp = updated_wrist - elbow_seg
