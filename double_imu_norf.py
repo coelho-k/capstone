@@ -8,7 +8,8 @@ import mpl_toolkits.mplot3d as plt3d
 import transforms3d 
 import time
 
-imus = serial.Serial('/dev/ttyACM0', 115200)
+imu_1 = serial.Serial('/dev/ttyACM0', 115200)
+imu_2 = serial.Serial('/dev/ttyACM1', 115200)
 column_names = ["qw", "qx", "qy", "qz"]
 wrist = pd.DataFrame(columns = column_names)
 elbow = pd.DataFrame(columns = column_names)
@@ -29,30 +30,29 @@ elbow_seg = np.array([0, 0, 1.5])
 axis_change = np.array([0.7071, 0, 0.7071, 0])
 
 
-time.sleep(2)
+#time.sleep(2)
 
 global wrist_q# = [0,0,0,0]
 global elbow_q# = [0,0,0,0]
 
 while True:
     try:
-        data = imus.readline().decode('ascii').replace('\r\n', '')#.replace('\t\tCALIBRATION', '').replace(':', '').replace('\t\t', '')
-        data = data.split(',')
-        #print(data)
+        elbow_data = imu_1.readline().decode('ascii').replace('\r\n', '').replace('\t\tCALIBRATION', '').replace(':', '').replace('\t\t', '')
+        elbow_data = elbow_data.split(' ')
+        print(elbow_data)
+        wrist_data = imu_2.readline().decode('ascii').replace('\r\n', '').replace('\t\tCALIBRATION', '').replace(':', '').replace('\t\t', '')
+        wrist_data = wrist_data.split(' ')
+        print(wrist_data)
     except:
         continue
     
-    if len(data) == 5 and float(data[4]) == 1.00: 
-        wrist = wrist.append({'qw':float(data[0]), 'qx':float(data[1]), 'qy':float(data[2]), 'qz':float(data[3])}, ignore_index=True)
-        wrist_q = wrist.loc[wrist_cnt]
-        wrist_cnt += 1
+    wrist = wrist.append({'qw':float(wrist_data[1]), 'qx':float(wrist_data[3]), 'qy':float(wrist_data[5]), 'qz':float(wrist_data[7])}, ignore_index=True)
+    wrist_q = wrist.loc[wrist_cnt]
+    wrist_cnt += 1
     
-    elif len(data) == 5 and float(data[4]) == 2.00:
-        elbow = elbow.append({'qw':float(data[0]), 'qx':float(data[1]), 'qy':float(data[2]), 'qz':float(data[3])}, ignore_index=True)   
-        elbow_q = elbow.loc[elbow_cnt]
-        elbow_cnt += 1
-    else:
-        continue
+    elbow = elbow.append({'qw':float(elbow_data[1]), 'qx':float(elbow_data[3]), 'qy':float(elbow_data[5]), 'qz':float(elbow_data[7])}, ignore_index=True)   
+    elbow_q = elbow.loc[elbow_cnt]
+    elbow_cnt += 1
 
     if elbow_cnt >= 1 and wrist_cnt >= 1: 
         print('Elbow = ', elbow_q, '\n')
@@ -69,7 +69,7 @@ while True:
         elbow_seg = shoulder + elbow_seg
         print('New Elbow Co-ordinates = ', elbow_seg)
 
-        """# ----------------- Implementing wrist rotation about a fixed point (shoulder) ---------------------
+        # ----------------- Implementing wrist rotation about a fixed point (shoulder) ---------------------
         temp = updated_wrist - elbow_seg
         wrist_seg = transforms3d.quaternions.rotate_vector(temp, wrist_q)
         wrist_seg = elbow_seg + wrist_seg
@@ -78,13 +78,13 @@ while True:
         temp = wrist_seg - elbow_seg
         wrist_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
         wrist_seg = elbow_seg + wrist_seg
-        print('New Co-ordinates = ', wrist_seg)"""
+        print('New Wrist Co-ordinates = ', wrist_seg)
 
 
         ax.plot([0, 0], [0, 0], [2, 1], color = 'blue', marker = '.')   # TORSE
         ax.plot([0, 0.2], [0, 0.2], [1, 0], color = 'blue', marker = '.')   # LEG
         ax.plot([0, -0.2], [0, -0.2], [1, 0], color = 'blue', marker = '.') # LEG 
-        # ax.plot([elbow_seg[0], wrist_seg[0]], [elbow_seg[1], wrist_seg[1]], [elbow_seg[2], wrist_seg[2]], color = 'blue', marker = '.')   # WRIST SEGMENT
+        ax.plot([elbow_seg[0], wrist_seg[0]], [elbow_seg[1], wrist_seg[1]], [elbow_seg[2], wrist_seg[2]], color = 'blue', marker = '.')   # WRIST SEGMENT
         ax.plot([shoulder[0], elbow_seg[0]], [shoulder[1], elbow_seg[1]], [shoulder[2], elbow_seg[2]], color = 'blue', marker = '.')   # ARM SEGMENT
         plt.autoscale(False)
         plt.xlim(-2,2)

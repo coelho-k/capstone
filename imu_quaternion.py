@@ -77,7 +77,7 @@ while True:
         print('New Co-ordinates = ', test)
         # -------------------------------------------------------------------------------------------------#
         
-        wr.writerow(test)
+        # wr.writerow(test)
 
         # makeFig()
         ax.plot([0, 0], [0, 0], [2, 1], color = 'blue', marker = '.')   # TORSE
