@@ -24,9 +24,9 @@ plt.ion()
 
 shoulder = np.array([0, 0, 2])
 updated_elbow = np.array([0, 0, 1.5])
-updated_wrist = np.array([0, 0, 1])
-wrist_seg = np.array([0, 0, 1])
 elbow_seg = np.array([0, 0, 1.5])
+updated_wrist = np.array([0, 0, 1.5])
+wrist_seg = np.array([0, 0, 1.5])
 axis_change = np.array([0.7071, 0, 0.7071, 0])
 
 
@@ -56,7 +56,7 @@ while True:
 
     if elbow_cnt >= 1 and wrist_cnt >= 1: 
         print('Elbow = ', elbow_q, '\n')
-        print('Wrist = ', wrist_q)
+        print('Wrist q = ', wrist_q)
 
         # ----------------- Implementing elbow rotation about a fixed point (shoulder) ---------------------
         temp = updated_elbow - shoulder
@@ -69,15 +69,15 @@ while True:
         elbow_seg = shoulder + elbow_seg
         print('New Elbow Co-ordinates = ', elbow_seg)
 
-        # ----------------- Implementing wrist rotation about a fixed point (shoulder) ---------------------
-        temp = updated_wrist - elbow_seg
+        # ----------------- Implementing wrist rotation about elbow ---------------------
+        temp = updated_wrist - shoulder
         wrist_seg = transforms3d.quaternions.rotate_vector(temp, wrist_q)
-        wrist_seg = elbow_seg + wrist_seg
+        wrist_seg = shoulder + wrist_seg 
         # -------------------------------------------------------------------------------------------------#
         # -------------------- Aligning wrist IMU axes with shoulder ----------------------------------------#
-        temp = wrist_seg - elbow_seg
+        temp = wrist_seg - shoulder
         wrist_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
-        wrist_seg = elbow_seg + wrist_seg
+        wrist_seg = shoulder + wrist_seg
         print('New Wrist Co-ordinates = ', wrist_seg)
 
 
