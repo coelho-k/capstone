@@ -19,7 +19,7 @@ import transforms3d
         #test = [test[0] / test_mag, test[1] / test_mag, test[2] / test_mag]
 # -------------------------------
 
-result_file = open("rotation_24_2_20.csv",'w')
+result_file = open("abduction_25_2_20.csv",'w')
 wr = csv.writer(result_file)
 
 imu = serial.Serial('/dev/ttyACM0', 115200)

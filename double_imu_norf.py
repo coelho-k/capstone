@@ -80,6 +80,8 @@ while True:
         wrist_seg = shoulder + wrist_seg
         print('New Wrist Co-ordinates = ', wrist_seg)
 
+        joint_angle = np.sqrt(1)  # Fill it in
+
 
         ax.plot([0, 0], [0, 0], [2, 1], color = 'blue', marker = '.')   # TORSE
         ax.plot([0, 0.2], [0, 0.2], [1, 0], color = 'blue', marker = '.')   # LEG
