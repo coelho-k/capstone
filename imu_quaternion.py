@@ -19,7 +19,7 @@ import transforms3d
         #test = [test[0] / test_mag, test[1] / test_mag, test[2] / test_mag]
 # -------------------------------
 
-result_file = open("abduction_25_2_20.csv",'w')
+result_file = open("all_in_one_26_2_20.csv",'w')
 wr = csv.writer(result_file)
 
 imu = serial.Serial('/dev/ttyACM0', 115200)
@@ -71,10 +71,10 @@ while True:
         test = shoulder + test
         # -------------------------------------------------------------------------------------------------#
         # -------------------- Aligning the IMU axes with shoulder ----------------------------------------#
-        temp = test - shoulder
-        test = transforms3d.quaternions.rotate_vector(temp, axis_change)
-        test = shoulder + test
-        print('New Co-ordinates = ', test)
+        #temp = test - shoulder
+        #test = transforms3d.quaternions.rotate_vector(temp, axis_change)
+        #test = shoulder + test
+        #print('New Co-ordinates = ', test)
         # -------------------------------------------------------------------------------------------------#
         
         wr.writerow(test)
