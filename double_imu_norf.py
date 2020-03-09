@@ -30,7 +30,7 @@ updated_elbow = np.array([0, 0, 1.5])
 elbow_seg = np.array([0, 0, 1.5])
 updated_wrist = np.array([0, 0, 1.5])
 wrist_seg = np.array([0, 0, 1.5])
-axis_change = np.array([0.7071, 0, 0.7071, 0])
+axis_change = np.array([0.7071, 0, -0.7071, 0])
 
 
 #time.sleep(2)
@@ -65,15 +65,18 @@ while True:
         print('Elbow = ', elbow_q, '\n')
         print('Wrist q = ', wrist_q)
 
+        elbow_q = [elbow_q[0], -elbow_q[3], elbow_q[2], elbow_q[1]]
+        wrist_q = [wrist_q[0], -wrist_q[3], wrist_q[2], wrist_q[1]]
+
         # ----------------- Implementing elbow rotation about a fixed point (shoulder) ---------------------
         temp = updated_elbow - shoulder
         elbow_seg = transforms3d.quaternions.rotate_vector(temp, elbow_q)
         elbow_seg = shoulder + elbow_seg
         # -------------------------------------------------------------------------------------------------#
         # -------------------- Aligning elbow IMU axes with shoulder ----------------------------------------#
-        #temp = elbow_seg - shoulder
-        #elbow_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
-        #elbow_seg = shoulder + elbow_seg
+        temp = elbow_seg - shoulder
+        elbow_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
+        elbow_seg = shoulder + elbow_seg
         print('New Elbow Co-ordinates = ', elbow_seg)
 
         # ----------------- Implementing wrist rotation about elbow ---------------------
@@ -82,10 +85,13 @@ while True:
         wrist_seg = shoulder + wrist_seg 
         # -------------------------------------------------------------------------------------------------#
         # -------------------- Aligning wrist IMU axes with shoulder ----------------------------------------#
-        #temp = wrist_seg - shoulder
-        #wrist_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
-        #wrist_seg = shoulder + wrist_seg
+        temp = wrist_seg - shoulder
+        wrist_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
+        wrist_seg = shoulder + wrist_seg
         print('New Wrist Co-ordinates = ', wrist_seg)
+
+        # Only Translating the X and Y components of the wrist. Test more !!!!
+        wrist_seg = [wrist_seg[0] + elbow_seg[0], wrist_seg[1] + elbow_seg[1], wrist_seg[2]]
 
         joint_angle = np.sqrt(np.dot(np.dot(elbow_q[0] - wrist_q[1], elbow_q[1] - wrist_q[2]), np.dot(elbow_q[2] - wrist_q[3], elbow_q[3])))  # Fill it in
         joint_angle = joint_angle * 360 # Unsure what this number should be

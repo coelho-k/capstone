@@ -39,7 +39,7 @@ plt.ion()
 shoulder = np.array([0, 0, 2])
 updated_point = np.array([0, 0, 1])
 test = np.array([0, 0, 1])
-axis_change = np.array([0.7071, 0, 0.7071, 0])
+axis_change = np.array([0.7071, 0, -0.7071, 0])
 #q_rest = [0.3839, -0.4862, 0.4019, 0.6743] --> For trying to create a reference rotation
 
 """
@@ -59,6 +59,7 @@ while True:
     if x[0] == 'qW':
         quaternions = quaternions.append({'qw':float(x[1]), 'qx':float(x[3]), 'qy':float(x[5]), 'qz':float(x[7])}, ignore_index=True)
         q = quaternions.loc[cnt]
+        q = [q[0], -q[3], q[2], q[1]]
 
         # ------------------- Print Checks ----------------------------------
         print(q)
@@ -71,13 +72,13 @@ while True:
         test = shoulder + test
         # -------------------------------------------------------------------------------------------------#
         # -------------------- Aligning the IMU axes with shoulder ----------------------------------------#
-        #temp = test - shoulder
-        #test = transforms3d.quaternions.rotate_vector(temp, axis_change)
-        #test = shoulder + test
-        #print('New Co-ordinates = ', test)
+        temp = test - shoulder
+        test = transforms3d.quaternions.rotate_vector(temp, axis_change)
+        test = shoulder + test
+        print('New Co-ordinates = ', test)
         # -------------------------------------------------------------------------------------------------#
         
-        wr.writerow(test)
+        #wr.writerow(test)
 
         # makeFig()
         ax.plot([0, 0], [0, 0], [2, 1], color = 'blue', marker = '.')   # TORSE
