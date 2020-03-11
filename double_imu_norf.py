@@ -14,7 +14,7 @@ column_names = ["qw", "qx", "qy", "qz"]
 wrist = pd.DataFrame(columns = column_names)
 elbow = pd.DataFrame(columns = column_names)
 
-result_file = open("angle_test.csv",'w')
+result_file = open("bent.csv",'w')
 wr = csv.writer(result_file)
 
 elbow_cnt = 0
@@ -97,7 +97,11 @@ while True:
         joint_angle = joint_angle * 360 # Unsure what this number should be
         print ('Joint Angle = ', joint_angle)
 
-        wr.writerow([joint_angle])
+        elbow_seg_list = list(elbow_seg)
+        csv_row = elbow_seg_list + wrist_seg
+        #wr.writerow(csv_row)
+
+        #wr.writerow([joint_angle])
     
         ax.plot([0, 0], [0, 0], [2, 1], color = 'blue', marker = '.')   # TORSE
         ax.plot([0, 0.2], [0, 0.2], [1, 0], color = 'blue', marker = '.')   # LEG
