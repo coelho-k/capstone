@@ -8,7 +8,8 @@ import mpl_toolkits.mplot3d as plt3d
 import transforms3d 
 import time, csv
 
-imus = serial.Serial('/dev/ttyACM2', 115200)
+# Make Serial Port a Parameter
+imus = serial.Serial('/dev/ttyACM0', 115200)
 column_names = ["qw", "qx", "qy", "qz"]
 wrist = pd.DataFrame(columns = column_names)
 elbow = pd.DataFrame(columns = column_names)
@@ -55,9 +56,11 @@ while True:
         elbow_q = elbow.loc[elbow_cnt]
         elbow_cnt += 1
 
-    if elbow_cnt >= 1 and wrist_cnt >= 1: 
-        print('Elbow = ', elbow_q, '\n')
+    if (elbow_cnt >= 1 and wrist_cnt >= 1) and (wrist_cnt == elbow_cnt): 
+        print('Elbow = ', elbow_q)
+        print('Elbow Count = ', elbow_cnt)
         print('Wrist = ', wrist_q)
+        print('Wrist Count = ', wrist_cnt)
 
         elbow_q = [elbow_q[0], -elbow_q[3], elbow_q[2], elbow_q[1]]
         wrist_q = [wrist_q[0], -wrist_q[3], wrist_q[2], wrist_q[1]]
@@ -71,7 +74,7 @@ while True:
         temp = elbow_seg - shoulder
         elbow_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
         elbow_seg = shoulder + elbow_seg
-        print('New Elbow Co-ordinates = ', elbow_seg)
+        #print('New Elbow Co-ordinates = ', elbow_seg)
 
         # ----------------- Implementing wrist rotation about elbow ---------------------
         temp = updated_wrist - shoulder
@@ -82,7 +85,7 @@ while True:
         temp = wrist_seg - shoulder
         wrist_seg = transforms3d.quaternions.rotate_vector(temp, axis_change)
         wrist_seg = shoulder + wrist_seg
-        print('New Wrist Co-ordinates = ', wrist_seg)
+        #print('New Wrist Co-ordinates = ', wrist_seg)
 
         # Only Translating the X and Y components of the wrist. Test more !!!!
         wrist_seg = [wrist_seg[0] + elbow_seg[0], wrist_seg[1] + elbow_seg[1], wrist_seg[2]]
@@ -91,9 +94,9 @@ while True:
         #print ('Joint Angle = ', joint_angle)
         elbow_seg_list = list(elbow_seg)
         csv_row = elbow_seg_list + wrist_seg
-        wr.writerow(csv_row)
+        wr.writerow([wrist_q])
         
-        """
+        
         ax.plot([0, 0], [0, 0], [2, 1], color = 'blue', marker = '.')   # TORSE
         ax.plot([0, 0.2], [0, 0.2], [1, 0], color = 'blue', marker = '.')   # LEG
         ax.plot([0, -0.2], [0, -0.2], [1, 0], color = 'blue', marker = '.') # LEG 
@@ -108,4 +111,4 @@ while True:
         
         plt.pause(0.0000001)
         ax.cla()
-        """
+        
